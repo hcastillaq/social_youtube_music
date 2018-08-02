@@ -11,6 +11,7 @@ const server = Hapi.server({
   }
 });
 
+
 server.route({
   method:'GET',
   path:'/',
@@ -34,3 +35,18 @@ const init = async() => {
 }
 
 init();
+
+/* -------------- Socket.io ------------------ */
+
+const io = require('socket.io')(server.listener);
+
+io.on('connection', socket => {
+    console.log('User connected');
+});
+
+
+
+
+
+
+
