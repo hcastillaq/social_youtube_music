@@ -1,65 +1,213 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Yotutube Music Iframe</title>
+    <style>
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/5.3.0/firebase-app.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/5.3.0/firebase-auth.js"></script>
-    <script defer src="/__/firebase/5.3.0/firebase-database.js"></script>
-    <script defer src="/__/firebase/5.3.0/firebase-messaging.js"></script>
-    <script defer src="/__/firebase/5.3.0/firebase-storage.js"></script>
-    <!-- initialize the SDK after all desired features are loaded -->
-    <script defer src="/__/firebase/init.js"></script>
+      *{
+        padding: 0px;
+        margin: 0px;
+        font-family: sans-serif;
+      }
 
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
+      body{
+        background-color: #121212;
+      }
+
+      nav{
+        width: 100%;
+        height: 60px;
+        background: #232323;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+
+      .content{
+        height: 70vh;
+        margin: auto;
+        max-width: 1280px;
+        min-width: 320px;
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 3%;
+        display: hidden;
+      }
+
+      #waitlist{
+        height: 100%;
+        width: 320px;
+        flex: none;
+        background-color: #232323;
+        margin-right: 20px;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      
+      #player{
+        flex: 1;
+        margin: 0px 20px;
+        border-radius: 5px;
+        height: 100%;
+      }
+      
+      .waitlist__header{
+        height: 45px;
+        width: calc(100% - 20px);
+        background-color: #434343;
+        display: flex;
+        align-items: center;
+        padding: 0px 10px;
+        justify-content: space-between;
+        color: white;
+      }
+      
+      .waitlist__header__addBtn{
+        height: 30px;
+        width: 30px;
+        background-color: white;
+        color: black;
+        position: relative;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0px 0px 15px 0px rgba(0,0,0,.5);
+        cursor: pointer;
+      }
+
+      .whitelist__content{
+        width: 100%;
+        height: calc(100% - 50px);
+        overflow: auto;
+        color: white;
+      }
+      .whitelist__content h3{
+        text-align: center;
+        margin: 20px;
+      }
+      
+      @keyframes addmodal__content{
+        from{margin-top: -30%;}
+        to{margin-top: 0px;}
+      }
+
+      .addmodal{
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: white;
+      }
+
+      .addmodal__content{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        justify-content: center;
+        background-color: #f3f3f3;
+        animation-name: addmodal__content;
+        animation-duration: .3s;
+        flex-direction: column;
+      }
+      .addmodal__content__results{
+        width: 50vw;
+        overflow: auto;
+        max-height: 400px;
+      }
+
+      .addmodal__content__results .waitlist__content__item span{
+        color:  #212121;
+      }
+
+      .addmodal__content__results .waitlist__content__item:hover{
+        background-color: #dcdcdc;
+      }
+
+      .addmodal form{
+        width: 50vw;
+      }
+
+      .addmodal form input{
+        border: none;
+        border-bottom: 2px solid #212121;
+        height: 40px;
+        outline: none;
+        font-size: 1.1em;
+        width: 100%;
+        background-color: transparent;
+      }
+      
+      .waitlist__content__item{
+        display: flex;
+        color: white;
+        margin: 10px;
+        align-items: center;
+        cursor: pointer;
+      }
+      .waitlist__content__item span{
+        font-size: 15px;
+        width: 70%
+      }
+      .waitlist__content__item__img{
+        width: 80px;
+        height: 55px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        margin-right: 10px;
+      }
+      .waitlist__content__item__img img{
+        width: 100%;
+        height: 100%;
+      }
+
+      @media (max-width:700px){
+        #player{
+          margin: 0px;
+          border-radius: 0px;
+        }
+
+        #waitlist{
+          margin: 0px;
+          width: 100%;
+          border-radius: 0px;
+        }
+
+        .addmodal form{
+          width: 80vw;
+        }
+        .addmodal__content__results{
+          width: 80%;
+        }
+      }
+
+      #testPlayer{
+        display: none;
       }
     </style>
+
   </head>
+
   <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
-    </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
-
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
-        try {
-          let app = firebase.app();
-          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
-  </body>
+    
+    <nav>
+      <h1>
+        Social Youtube Music Iframe
+      </h1>
+    </nav>
+    <div id="testPlayer"></div>
+    <div id="root"></div>
+  </body><script asyn src=""></script>
 </html>
+
+<script src="/static/bundle.js" async></script>
+<script src="https://apis.google.com/js/client.js" async></script>

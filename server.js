@@ -2,11 +2,11 @@ const Hapi = require('hapi');
 const Path = require('path');
 
 const server = Hapi.server({
-  port:3000,
+  port: process.env.PORT || 3000,
   host:'localhost',
   routes:{
     files:{
-      relativeTo: Path.join(__dirname, 'dist')
+      relativeTo: Path.join(__dirname, 'public')
     }
   }
 });
@@ -52,7 +52,6 @@ io.on('connection', socket => {
 
   socket.on('deleteSong', song => {
     songs = songs.filter( s => s.video_id != song.video_id);
-    console.log(songs);
     io.sockets.emit('dataSongs', songs);
   });
 
