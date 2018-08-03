@@ -55,6 +55,11 @@ io.on('connection', socket => {
     console.log(songs);
     io.sockets.emit('dataSongs', songs);
   });
+
+  socket.on('clear', e => {
+    songs = [];
+    io.sockets.emit('dataSongs', songs);
+  });
 });
 
 

@@ -6,8 +6,6 @@ import Events from './events';
 import youtubeService from './youtubeService';
 import './loadIframes';
 
-import './ioFunctions.js';
-
 Events.setSubject('modal');
 Events.setSubject('songsdata');
 
@@ -41,12 +39,7 @@ class Home extends React.Component{
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
   }
-
-  onReady(event){
-    console.log('here')
-    event.target.playVideo();
-  }
-
+  
   render()
   {
     let Modal = this.state.addmodal == true ? <AddModal /> : null;

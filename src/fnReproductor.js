@@ -1,5 +1,5 @@
 import Events from './events';
-import {socket} from './ioFunctions';
+import {socket, loadIo} from './ioFunctions';
 
 let instance = null;
 
@@ -52,6 +52,8 @@ class Reproductor {
   {
     if(this.currentSong!=null)
     {
+      console.log('aqui')
+      console.log(this.player, this.songs);
       this.player.loadVideoById(this.songs[this.currentSong].video_id);
     }
   }
@@ -68,6 +70,7 @@ class Reproductor {
 
   onReady(event, player){
     this.player = player;
+    loadIo();
   }
 
   onStatusChange(event){
