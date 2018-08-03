@@ -97,23 +97,37 @@
         position: fixed;
         top: 0;
         left: 0;
-        background-color: rgba(0,0,0,.5);
+        background-color: white;
       }
 
       .addmodal__content{
         width: 100%;
-        height: 30%;
+        height: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
         justify-content: center;
-        background-color: white;
+        background-color: #f3f3f3;
         animation-name: addmodal__content;
         animation-duration: .3s;
+        flex-direction: column;
+      }
+      .addmodal__content__results{
+        width: 50vw;
+        overflow: auto;
+        max-height: 400px;
+      }
+
+      .addmodal__content__results .waitlist__content__item span{
+        color:  #212121;
+      }
+
+      .addmodal__content__results .waitlist__content__item:hover{
+        background-color: #dcdcdc;
       }
 
       .addmodal form{
-        width: 50vw
+        width: 50vw;
       }
 
       .addmodal form input{
@@ -123,15 +137,19 @@
         outline: none;
         font-size: 1.1em;
         width: 100%;
+        background-color: transparent;
       }
       
       .waitlist__content__item{
         display: flex;
         color: white;
         margin: 10px;
+        align-items: center;
+        cursor: pointer;
       }
       .waitlist__content__item span{
         font-size: 15px;
+        width: 70%
       }
       .waitlist__content__item__img{
         width: 80px;
@@ -162,6 +180,9 @@
         .addmodal form{
           width: 80vw;
         }
+        .addmodal__content__results{
+          width: 80%;
+        }
       }
 
       #testPlayer{
@@ -180,7 +201,8 @@
     </nav>
     <div id="testPlayer"></div>
     <div id="root"></div>
-  </body>
+  </body><script asyn src=""></script>
 </html>
 
 <script src="/static/bundle.js" async></script>
+<script src="https://apis.google.com/js/client.js" async></script>

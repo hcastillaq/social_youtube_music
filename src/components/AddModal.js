@@ -1,12 +1,20 @@
 import React from 'react';
 import Events from './../events';
 import Reproductor from './../fnReproductor';
+import  {socket} from './../ioFunctions';
+import youtubeService from './../youtubeService';
+import ItemList from './ItemList';
 
 export default class AddModal extends React.Component{
 
   constructor(props){
     super(props);
-    this.state = { url: '', load: false}
+    this.state = { 
+      url: '', 
+      load: false,
+      searchItems: [],
+      searching: false
+    }
   }
 
   componentWillMount()
@@ -31,12 +39,29 @@ export default class AddModal extends React.Component{
   onSubmit(e)
   {
     e.preventDefault();
+    this.setState( {searching:true} );
+
+    youtubeService.search(this.state.url).then( resp => {
+      let items = resp.items.map( e =>  { 
+        return {
+          video_id: e.id.videoId,
+          title: e.snippet.title
+        }
+       });
+       
+      this.setState({ searchItems: items });
+      this.setState( {searching:false} );
+
+    });
+
+    /*
     let videoid = this.state.url.split('v=')[1];
     this.setState({ load: true });
     Reproductor.getDataVideo(videoid).then( data => {
-      console.log(data);
+      socket.emit('addSong', data);
       this.onCloseModal();
-    })
+    });
+    */
   }
   onChange(e)
   {
@@ -54,26 +79,44 @@ export default class AddModal extends React.Component{
     }
   }
 
+  onSelectItem( data ){
+    socket.emit('addSong', data);
+    this.onCloseModal();
+  }
+
   render()
   {
     let render;
+
     if(this.state.load){
       render =  <h3> Wait ...</h3>;
     }else{
       render = (
-        <form onSubmit={this.onSubmit.bind(this)}>
-          <input type="text" placeholder="Youtube Song Link" 
+        <form onSubmit={this.onSubmit.bind(this)}> 
+          <input type="text" placeholder="Paste youtube link or search video" 
             value={this.state.url}  onChange={this.onChange.bind(this)} 
             autoComplete="off" required/>
         </form>
       )
     }
     
+    let items = this.state.searchItems.map( item => {
+      return(
+        <ItemList song={item} key={item.video_id} 
+          click={this.onSelectItem.bind(this)} />
+      )
+    });
+
     return (
       <div className="addmodal" name="addmodal" onClick={this.onClick.bind(this)}>
         <div className="addmodal__close" ></div>
         <div className="addmodal__content" name="addmodal__content">
           {render}
+          {this.state.searching ? (<div><br /><h3>Wait...</h3></div>):null}
+
+          <div className="addmodal__content__results">
+            {items}
+          </div>
         </div>
       </div>
     )

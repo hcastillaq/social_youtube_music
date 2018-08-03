@@ -1,5 +1,5 @@
-import { resolve } from "url";
-import { rejects } from "assert";
+import Events from './events';
+import {socket} from './ioFunctions';
 
 let instance = null;
 
@@ -10,11 +10,60 @@ class Reproductor {
     if(instance == null)
     {
       instance = this;
-      this.player = null;
+      
+      this.songs = [];
+      this.oldSongs = [];
+      
+      this.currentSong = null;
+
+      this.player = null; 
       this.playerTest = null;
       this.testResolve = () => {};
     }
     return instance;
+  }
+
+  setSogns(songs)
+  {
+    this.songs = songs;
+    
+    /*
+    this.songs = [];
+    songs.forEach( song => {
+      let find = false;
+      this.oldSongs.forEach( oldSong => {
+        if( song.video_id == oldSong.video_id){
+          find = true;
+        }
+      });
+      if(!find){
+        this.songs.push(song);
+      }
+    });
+    */
+   Events.getSubject('songsdata').next( this.songs );
+   if( this.currentSong == null && this.songs.length > 0){
+     this.currentSong = 0;
+     this.play();
+   }
+  }
+
+  play()
+  {
+    if(this.currentSong!=null)
+    {
+      this.player.loadVideoById(this.songs[this.currentSong].video_id);
+    }
+  }
+
+  nextSong()
+  {
+    if(this.songs[this.currentSong + 1]){
+      this.currentSong ++;
+      this.play();
+    }else{
+      this.currentSong = null;
+    }
   }
 
   onReady(event, player){
@@ -22,11 +71,13 @@ class Reproductor {
   }
 
   onStatusChange(event){
+    if(event.data == 0){
+      socket.emit('deleteSong', this.songs[this.currentSong]);
+      this.nextSong();
+    }
   }
   
-
   onReadyTest(event, player){
-    console.log(player)
     this.playerTest = player;
   }
 

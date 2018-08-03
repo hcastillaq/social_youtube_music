@@ -11,7 +11,6 @@ const server = Hapi.server({
   }
 });
 
-
 server.route({
   method:'GET',
   path:'/',
@@ -40,8 +39,22 @@ init();
 
 const io = require('socket.io')(server.listener);
 
+let songs = [];
+
 io.on('connection', socket => {
-    console.log('User connected');
+
+  socket.emit('dataSongs', songs);
+
+  socket.on('addSong', (data) => {
+    songs.push(data);
+    io.sockets.emit('dataSongs', songs);
+  });
+
+  socket.on('deleteSong', song => {
+    songs = songs.filter( s => s.video_id != song.video_id);
+    console.log(songs);
+    io.sockets.emit('dataSongs', songs);
+  });
 });
 
 

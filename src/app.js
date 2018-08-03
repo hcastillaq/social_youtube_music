@@ -1,34 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Reproductor from './fnReproductor.js';
-import './ioFunctions.js';
 import ListMusic from './components/ListMusic';
 import AddModal from './components/AddModal';
 import Events from './events';
+import youtubeService from './youtubeService';
+import './loadIframes';
+
+import './ioFunctions.js';
 
 Events.setSubject('modal');
-
-
-window.onYouTubeIframeAPIReady = ()=> {
-  console.info('!-------------YT full load-----------!');
-
-  let player = new YT.Player('player', {
-    videoId: '71q6w-8T4Dg',
-    events: {
-      'onReady': ( event ) => { Reproductor.onReady(event, player) },
-      'onStateChange': Reproductor.onStatusChangee
-    }
-  });
-
-  let playerTest = new YT.Player('testPlayer', {
-    videoId: '',
-    events: {
-      'onReady': ( event ) => { Reproductor.onReadyTest(event, playerTest) },
-      'onStateChange': ( event ) => { Reproductor.onStatusChangeTest(event) }
-    }
-  });
-
-}
+Events.setSubject('songsdata');
 
 class Home extends React.Component{
   constructor(props){
@@ -41,6 +22,7 @@ class Home extends React.Component{
   componentDidMount(){
     window.onload= () => {
       this.loadIframeApi();
+      youtubeService.loadApi();
     }
 
     this.modalSubscription = Events.getSubject('modal')
