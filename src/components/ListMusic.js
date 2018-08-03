@@ -37,7 +37,9 @@ class ListMusic extends React.Component{
           <div className="waitlist__header__addBtn" onClick={this.onClick.bind(this)}> + </div>
         </div>
         <div className="whitelist__content">
-          {items}
+          {items.length == 0 ? (
+            <h3> Ups... Not Songs :( </h3>
+          ) : items}
         </div>
       </div>
     )
