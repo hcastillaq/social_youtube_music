@@ -13,9 +13,7 @@ class Reproductor {
       
       this.songs = [];
       this.oldSongs = [];
-      
-      this.currentSong = null;
-
+      this.on = false;
       this.player = null; 
       this.playerTest = null;
       this.testResolve = () => {};
@@ -32,7 +30,7 @@ class Reproductor {
     songs.forEach( song => {
       let find = false;
       this.oldSongs.forEach( oldSong => {
-        if( song.video_id == oldSong.video_id){
+        if( song.video_id == oldSong.video_id){currentSong
           find = true;
         }
       });
@@ -42,29 +40,17 @@ class Reproductor {
     });
     */
    Events.getSubject('songsdata').next( this.songs );
-   if( this.currentSong == null && this.songs.length > 0){
-     this.currentSong = 0;
+   if( this.songs.length > 0 && !this.on){
+     this.on = true;
      this.play();
    }
   }
 
   play()
   {
-    if(this.currentSong!=null)
+    if(this.songs.length > 0)
     {
-      console.log('aqui')
-      console.log(this.player, this.songs);
-      this.player.loadVideoById(this.songs[this.currentSong].video_id);
-    }
-  }
-
-  nextSong()
-  {
-    if(this.songs[this.currentSong + 1]){
-      this.currentSong ++;
-      this.play();
-    }else{
-      this.currentSong = null;
+      this.player.loadVideoById(this.songs[0].video_id);
     }
   }
 
@@ -75,8 +61,8 @@ class Reproductor {
 
   onStatusChange(event){
     if(event.data == 0){
-      socket.emit('deleteSong', this.songs[this.currentSong]);
-      this.nextSong();
+      this.on = false;
+      socket.emit('deleteSong', this.songs[0]);
     }
   }
   
