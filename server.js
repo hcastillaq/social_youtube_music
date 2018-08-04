@@ -3,7 +3,7 @@ const Path = require('path');
 
 const server = Hapi.server({
   port: process.env.PORT || 3000,
-  host:'0.0.0.0',
+  host: process.env.HOST || 'localhost',
   routes:{
     files:{
       relativeTo: Path.join(__dirname, 'public')
@@ -38,27 +38,46 @@ init();
 /* -------------- Socket.io ------------------ */
 
 const io = require('socket.io')(server.listener);
+const CHANNELS = require('./src/channels');
 
-let songs = [];
+let emits = new(require('./src/emits'))(io);
+
+const reproductorConfig = {
+  play: (data) => {
+    emits.emit(CHANNELS.PLAY, data);
+  },
+  load: (data) => {
+    emits.emit(CHANNELS.LOAD, data);
+  },
+  finish: (data) =>{
+    emits.emit(CHANNELS.DATASONGS, data);
+  }
+};
+
+const resproductor = new(require('./src/serverReproductor'))(reproductorConfig);
 
 io.on('connection', socket => {
 
-  socket.emit('dataSongs', songs);
+  emits.emit(CHANNELS.DATASONGS, resproductor.getSongs(), socket);
+  
+  if( resproductor.getCurrentSong() != null )
+  {
+    emits.emit(CHANNELS.LOAD, resproductor.getCurrentSong(), socket);
+  }
 
-  socket.on('addSong', (data) => {
-    songs.push(data);
-    io.sockets.emit('dataSongs', songs);
+  socket.on(CHANNELS.ADD_SONG, (song) => {
+    resproductor.setSong(song);
+    emits.emit(CHANNELS.DATASONGS, resproductor.getSongs());
   });
 
-  socket.on('deleteSong', song => {
-    songs = songs.filter( s => s.video_id != song.video_id);
-    io.sockets.emit('dataSongs', songs);
-  });
-
+  
+  /* Para resetear todo por si pasa algo */
   socket.on('clear', e => {
     songs = [];
+    currentSong = null;
     io.sockets.emit('dataSongs', songs);
   });
+
 });
 
 

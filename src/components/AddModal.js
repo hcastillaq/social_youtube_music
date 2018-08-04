@@ -4,13 +4,14 @@ import Reproductor from './../fnReproductor';
 import  {socket} from './../ioFunctions';
 import youtubeService from './../youtubeService';
 import ItemList from './ItemList';
+const CHANNELS = require('./../channels');
 
 export default class AddModal extends React.Component{
 
   constructor(props){
     super(props);
     this.state = { 
-      url: '', 
+      url: 'el video mas corto del mundo', 
       load: false,
       searchItems: [],
       searching: false
@@ -63,6 +64,7 @@ export default class AddModal extends React.Component{
     });
     */
   }
+  
   onChange(e)
   {
     this.setState( {url: e.target.value} )
@@ -80,8 +82,12 @@ export default class AddModal extends React.Component{
   }
 
   onSelectItem( data ){
-    socket.emit('addSong', data);
-    this.onCloseModal();
+    this.setState( {load: true, searchItems: [] } );
+    Reproductor.getDataVideo(data.video_id).then( res => {
+      socket.emit(CHANNELS.ADD_SONG, res);
+      this.setState( {load: false} );
+      this.onCloseModal();
+    });
   }
 
   render()
@@ -89,13 +95,13 @@ export default class AddModal extends React.Component{
     let render;
 
     if(this.state.load){
-      render =  <h3> Wait ...</h3>;
+      render =  <h3> Espera ...</h3>;
     }else{
       render = (
         <form onSubmit={this.onSubmit.bind(this)}> 
-          <input type="text" placeholder="Paste youtube link or search video" 
+          <input type="text" placeholder="Penga un link o Busca un video" 
             value={this.state.url}  onChange={this.onChange.bind(this)} 
-            autoComplete="off" required/>
+            autoComplete="off" autoFocus required/>
         </form>
       )
     }
@@ -112,7 +118,7 @@ export default class AddModal extends React.Component{
         <div className="addmodal__close" ></div>
         <div className="addmodal__content" name="addmodal__content">
           {render}
-          {this.state.searching ? (<div><br /><h3>Wait...</h3></div>):null}
+          {this.state.searching ? (<div><br /><h3>Espera...</h3></div>):null}
 
           <div className="addmodal__content__results">
             {items}

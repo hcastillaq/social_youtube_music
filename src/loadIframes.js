@@ -5,6 +5,10 @@ window.onYouTubeIframeAPIReady = () => {
 
   let player = new YT.Player('player', {
     videoId: '',
+    playerVars: {
+      'controls': 1,
+      'disablekb': 1,
+    },
     events: {
       'onReady': ( event ) => { Reproductor.onReady(event, player) },
       'onStateChange': ( event ) => { Reproductor.onStatusChange(event) }

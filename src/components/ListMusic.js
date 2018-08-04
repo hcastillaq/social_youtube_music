@@ -22,9 +22,9 @@ class ListMusic extends React.Component{
 
   render(){
     let items = [];
-    this.state.items.forEach( item => {
+    this.state.items.forEach( (item, index) => {
       items.push( (
-        <ItemList key={item.video_id} song={item}/>
+        <ItemList key={index} song={item}/>
       ) );
     })
     
@@ -38,7 +38,7 @@ class ListMusic extends React.Component{
         </div>
         <div className="whitelist__content">
           {items.length == 0 ? (
-            <h3> Ups... Not Songs :( </h3>
+            <h3> Ups... No tenemos datos, agrega un video :D </h3>
           ) : items}
         </div>
       </div>
