@@ -54,15 +54,6 @@ export default class AddModal extends React.Component{
       this.setState( {searching:false} );
 
     });
-
-    /*
-    let videoid = this.state.url.split('v=')[1];
-    this.setState({ load: true });
-    Reproductor.getDataVideo(videoid).then( data => {
-      socket.emit('addSong', data);
-      this.onCloseModal();
-    });
-    */
   }
   
   onChange(e)
@@ -82,12 +73,13 @@ export default class AddModal extends React.Component{
   }
 
   onSelectItem( data ){
-    this.setState( {load: true, searchItems: [] } );
-    Reproductor.getDataVideo(data.video_id).then( res => {
-      socket.emit(CHANNELS.ADD_SONG, res);
-      this.setState( {load: false} );
-      this.onCloseModal();
-    });
+    console.log('here');
+    // this.setState( {load: true, searchItems: [] } );
+    // Reproductor.getDataVideo(data.video_id).then( res => {
+    //   socket.emit(CHANNELS.ADD_SONG, res);
+    //   this.setState( {load: false} );
+    //   this.onCloseModal();
+    // });
   }
 
   render()
