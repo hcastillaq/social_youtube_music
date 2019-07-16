@@ -27,16 +27,19 @@ class Reproductor {
 	{
 		this.player.playVideo();
 
-		let second = data.song.currentSecond;
-		second -= (data.latencia * 0.001); 
-
 		let playerSecond = this.player.getCurrentTime();
+		let severSecond = data.song.currentSecond;
 
-		/* Calculamos diferencia */
-		let dif = Math.abs(playerSecond - second);
+		/* Calculamos la diferencia  de tiempos */
+		let latencia = Math.abs((new Date).getTime() - data.sendTime) * 0.001 // en ms; 
 
-		if(dif >= 2){
-			this.player.seekTo(second);
+		/* Diferencia real de los segundos, cliente vs servidor*/
+		let dif = Math.abs( playerSecond - (severSecond + latencia) );
+	
+		/* si la diferencia es mayor a 1s, regresamos la cancion 
+		al valor del servidor */
+		if(dif > 1){
+			this.player.seekTo(data.song.currentSecond);
 		}
 	}
 
@@ -50,7 +53,6 @@ class Reproductor {
 	}
 
 	onStatusChangeTest(event){
-		console.log(event.target.getDuration())
 		if(event.data == 1){
 			let data = event.target.getVideoData();
 			data.duration = event.target.getDuration();
