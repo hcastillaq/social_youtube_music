@@ -1,5 +1,5 @@
 import React from 'react';
-import Events from './../events';
+import Events from './../bus/events';
 import ItemList from './ItemList';
 
 class ListMusic extends React.Component{
